@@ -4,31 +4,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.Test;
 
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.google.inject.TypeLiteral;
 
 public class JCommanderModuleBuilderTest {
+  
+  public static final Module TEST_MODULE = new Module() {
+    public void configure(Binder binder) {
+      binder.bind(MyClass.class);
+    }
+  };
+
+  private static final String[] ARGV = "-groups foo --debug a b c".split("[ ]+");
+
   @Test
-  public void testArgs() {
-    String args = "-groups foo --debug a b c";
-    String[] argv = args.split("[ ]+");
+  public void testBasicsArgs() {
     Injector i = Guice.createInjector(
       new JCommanderModuleBuilder().bindParameters(AppParameters.class)
-          .withArguments(argv).build(),
-      new Module() {
-        public void configure(Binder binder) {
-          binder.bind(MyClass.class);
-          binder.bind(new TypeLiteral<Set<Long>>(){}).toInstance(new HashSet<Long>());
-        }
-      }
+          .withArguments(ARGV).build(), TEST_MODULE
     );
     MyClass myClass = i.getInstance(MyClass.class);
     assertNotNull(myClass);
@@ -36,4 +33,5 @@ public class JCommanderModuleBuilderTest {
     assertNotNull(myClass.other);
     assertEquals("foo", myClass.other.groups);
   }    
+
 }

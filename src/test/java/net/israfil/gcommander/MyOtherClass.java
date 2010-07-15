@@ -11,7 +11,8 @@ public class MyOtherClass {
   @Inject
   public MyOtherClass(
       @Named("groups") String groups,
-      @Named("blah") Set boredom) {
+      @Named("blah") Set boredom  // this is non-generic so we can bind it.
+  ) {
     this.groups = groups;
     this.boredom = boredom;
   }
