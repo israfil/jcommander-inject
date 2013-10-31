@@ -17,22 +17,20 @@
 package net.israfil.gcommander;
 
 import com.beust.jcommander.Parameter;
-import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.name.Named;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.truth0.Truth.ASSERT;
 
 public class JCommanderModuleBuilderTest {
+
+  private static final String[] ARGV = "-groups foo --debug a b c".split("[ ]+");
 
   static class AppParameters {
     @Parameter
@@ -53,37 +51,59 @@ public class JCommanderModuleBuilderTest {
   }
 
   static class MyClass {
-    @Inject @Named("cli.debug") public Boolean debug;
-    @Inject @Named("cli.verbose") public Integer debugVerbosity;
+    @Inject @Named("debug") public Boolean debug;
+    @Inject @Named("verbose") public Integer debugVerbosity;
     @Inject public MyOtherClass other;
   }
 
   static class MyOtherClass {
+    @Inject @Named("groups") public String groups;
+    @Inject @Named("blah") public Set boredom;
+  }
+
+  @Test public void testBasicsArgs() {
+    Injector i = Guice.createInjector(
+        JCommanderModuleBuilder.bindParameters(AppParameters.class)
+            .withArguments(ARGV).build());
+    MyClass myClass = i.getInstance(MyClass.class);
+    ASSERT.that(myClass).isNotNull();
+    ASSERT.that(myClass.debug).isTrue();
+    ASSERT.that(myClass.other).isNotNull();
+    ASSERT.that(myClass.other.groups).is("foo");
+  }
+
+  static class MyPrefixedClass {
+    @Inject @Named("cli.debug") public Boolean debug;
+    @Inject @Named("cli.verbose") public Integer debugVerbosity;
+    @Inject public MyOtherPrefixedClass other;
+  }
+
+  static class MyOtherPrefixedClass {
     @Inject @Named("cli.groups") public String groups;
     @Inject @Named("cli.blah") public Set boredom;
   }
 
-  public static final Module TEST_MODULE = new Module() {
-    @Override
-    public void configure(Binder binder) {
-      binder.bind(MyClass.class);
-    }
-  };
-
-  private static final String[] ARGV = "-groups foo --debug a b c".split("[ ]+");
-
-  @Test
-  public void testBasicsArgs() {
+  @Test public void testPrefixedArgs() {
     Injector i = Guice.createInjector(
-      JCommanderModuleBuilder.bindParameters(AppParameters.class)
-          .withPrefix("cli.")
-          .withArguments(ARGV).build(), TEST_MODULE
-    );
-    MyClass myClass = i.getInstance(MyClass.class);
-    assertNotNull(myClass);
-    assertTrue(myClass.debug);
-    assertNotNull(myClass.other);
-    assertEquals("foo", myClass.other.groups);
+        JCommanderModuleBuilder.bindParameters(AppParameters.class)
+            .withPrefix("cli.")
+            .withArguments(ARGV).build());
+    MyPrefixedClass myClass = i.getInstance(MyPrefixedClass.class);
+    ASSERT.that(myClass).isNotNull();
+    ASSERT.that(myClass.debug).isTrue();
+    ASSERT.that(myClass.other).isNotNull();
+    ASSERT.that(myClass.other.groups).is("foo");
+  }
+
+  @Test public void testParamterObject() {
+    Injector i = Guice.createInjector(
+        JCommanderModuleBuilder.bindParameters(AppParameters.class)
+            .withPrefix("cli.")
+            .withArguments(ARGV).build());
+    AppParameters params = i.getInstance(AppParameters.class);
+    ASSERT.that(params).isNotNull();
+    ASSERT.that(params.parameters).has().allOf("a", "b", "c").inOrder();
+    ASSERT.that(params.debug).isTrue();
   }
 
 }

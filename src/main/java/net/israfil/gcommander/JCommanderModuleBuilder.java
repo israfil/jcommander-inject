@@ -18,15 +18,17 @@ package net.israfil.gcommander;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
-import com.beust.jcommander.internal.Lists;
-import com.beust.jcommander.internal.Sets;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.name.Names;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import net.israfil.gcommander.FluentAPI.WithArguments;
 
@@ -62,17 +64,22 @@ public class JCommanderModuleBuilder implements
     return new Module() {
       @Override
       public void configure(Binder binder) {
-        List<Object> instances = Lists.newArrayList();
+        Map<Class<?>, Object> instances = new HashMap<Class<?>, Object>();
         for (Class<?> type : parameterObjectTypes) {
           try {
-            instances.add(type.newInstance());
+            instances.put(type, type.newInstance());
           } catch (Exception e) {
             throw new RuntimeException("Failed to instantiate " + type.getSimpleName());
           }
         }
         // populate instances
-        JCommander cmd = new JCommander(instances);
+        JCommander cmd = new JCommander(instances.values());
         cmd.parse(arguments);
+
+        // bind parameter object instances
+        for (Map.Entry<Class<?>, Object> entry : instances.entrySet()) {
+          binder.bind((Class)entry.getKey()).toInstance(entry.getValue());
+        }
 
         // bind parameters as named objects.
         for(ParameterDescription pdesc : cmd.getParameters()) {
@@ -126,9 +133,9 @@ public class JCommanderModuleBuilder implements
       private Object createEmptyCollection(Class<?> c) {
         if (c == null) return null;
         if (Set.class.isAssignableFrom(c)) {
-          return Sets.newHashSet();
+          return new HashSet();
         } else {
-          return Lists.newArrayList();
+          return new ArrayList();
         }
       }
 
