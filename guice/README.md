@@ -1,9 +1,9 @@
 JCommander-Guice
 ==========
 
-JCommander is a command-line parameter parsing framework by CŽdric Beust.  It lets you
-create annotated parameter objects, and handles parsing, type coercion, and various kinds of
-error reporting for the library user.
+[JCommander](http://github.com/cbeust/jcommander) is a command-line parameter parsing
+framework created by C&eacute;dric Beust.  It lets you create annotated parameter objects,
+and handles parsing, type coercion, and various kinds of error reporting for the library user.
 
 JCommander-Guice is an integration between JCommander and Guice - a sort of flag-binder.  
 JCommander-Guice acts as a Module builder, allowing you to simply pass in the JCommander-style
