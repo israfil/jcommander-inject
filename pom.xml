@@ -26,7 +26,8 @@
   
   <scm>
     <url>http://github.com/israfil/jcommander-inject</url>
-    <connection>http://github.com/israfil/jcommander-inject</connection>
+    <connection>scm:git:git@github.com:israfil/jcommander-inject.git</connection>
+    <developerConnection>scm:git:git@github.com:israfil/jcommander-inject.git</developerConnection>
   </scm>
   
   <modules>
