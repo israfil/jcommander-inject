@@ -24,9 +24,6 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
-      <plugin>
-        <artifactId>maven-gpg-plugin</artifactId>
-      </plugin>
     </plugins>
    </build>
 

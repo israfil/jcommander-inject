@@ -17,10 +17,6 @@
   <name>JCommander Dependency Injection Adapters</name>
   <url>http://github.com/israfil/jcommander-inject</url>
   
-  <properties>
-    <gpg.skip>true</gpg.skip>
-  </properties>
-  
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -91,18 +87,6 @@
         </plugin>
       </plugins>
     </pluginManagement>
-    <plugins>
-      <plugin>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals><goal>sign</goal></goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 
   <dependencyManagement>
