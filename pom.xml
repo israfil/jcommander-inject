@@ -8,7 +8,7 @@
   <groupId>net.israfil.cli</groupId>
   <artifactId>jcommander-inject-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
   <description>
     A set of integrations for the JCommander command-line processing system with JSR-330
     compliant dependency injection systems.
