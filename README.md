@@ -9,8 +9,8 @@ JCommander-Inject provides integrations between JCommander and dependency inject
 based on JSR-330 - a sort of flags-binder.  
 
 Integrations:
-
-  * Guice (Released): Module builder approach
+  * [Guice](https://github.com/israfil/jcommander-inject/tree/master/guice) 
+    (Released): Module builder approach
   * Dagger (Planned): Code-generation of a Dagger module
   * Others: No firm plans, contributions are welcome.
   
