@@ -92,7 +92,6 @@ public class JCommanderModuleBuilder implements
             }
             bindToType(binder, type, name, value);
           }
-          System.out.println();
         }
       }
 
